@@ -8,4 +8,9 @@ export const env = {
   databaseDialect: process.env.DATABASE_DIALECT || '',
   databaseStorage: process.env.DB_STORAGE || './data/ouvidoria.sqlite',
   databaseSsl: process.env.DB_SSL === 'true',
+  turmasSeed: (process.env.TURMAS_SEED || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((nome) => ({ nome, turno: 'diurno' })),
 };

@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Manifestacao, TIPOS, SETORES, STATUS } from '../models/Manifestacao.js';
+import { Turma } from '../models/Turma.js';
 
 function validate(data, partial = false) {
   const errors = [];
@@ -82,6 +83,17 @@ export async function create(req, res, next) {
     const errors = validate(req.body);
     if (errors.length) return res.status(400).json({ error: { message: errors.join('; '), status: 400 } });
 
+    let turmaId = null;
+    let turmaNome = null;
+    if (!req.body.anonimo && req.body.turma) {
+      const turma = await Turma.findOne({ where: { nome: req.body.turma, ativo: true } });
+      if (!turma) {
+        return res.status(400).json({ error: { message: 'turma não encontrada', status: 400 } });
+      }
+      turmaId = turma.id;
+      turmaNome = turma.nome;
+    }
+
     const last = await Manifestacao.findOne({ order: [['id', 'DESC']] });
     const protocolo = buildProtocolo((last?.id || 0) + 1);
 
@@ -91,6 +103,8 @@ export async function create(req, res, next) {
       titulo: req.body.titulo.trim(),
       descricao: req.body.descricao.trim(),
       setor: req.body.setor || null,
+      turma: req.body.anonimo ? null : (turmaNome || null),
+      turmaId: req.body.anonimo ? null : turmaId,
       nome: req.body.anonimo ? null : (req.body.nome?.trim() || null),
       contato: req.body.anonimo ? null : (req.body.contato?.trim() || null),
       anonimo: Boolean(req.body.anonimo),
@@ -115,6 +129,22 @@ export async function update(req, res, next) {
     if (req.body.titulo) payload.titulo = req.body.titulo.trim();
     if (req.body.descricao) payload.descricao = req.body.descricao.trim();
     if (req.body.setor !== undefined) payload.setor = req.body.setor || null;
+    if (req.body.turma !== undefined) {
+      if (req.body.anonimo) {
+        payload.turma = null;
+        payload.turmaId = null;
+      } else if (req.body.turma) {
+        const turma = await Turma.findOne({ where: { nome: req.body.turma, ativo: true } });
+        if (!turma) {
+          return res.status(400).json({ error: { message: 'turma não encontrada', status: 400 } });
+        }
+        payload.turma = turma.nome;
+        payload.turmaId = turma.id;
+      } else {
+        payload.turma = null;
+        payload.turmaId = null;
+      }
+    }
     if (req.body.nome !== undefined) payload.nome = req.body.anonimo ? null : (req.body.nome?.trim() || null);
     if (req.body.contato !== undefined) payload.contato = req.body.anonimo ? null : (req.body.contato?.trim() || null);
     if (req.body.anonimo !== undefined) payload.anonimo = Boolean(req.body.anonimo);
@@ -127,6 +157,8 @@ export async function update(req, res, next) {
     if (req.body.anonimo) {
       payload.nome = null;
       payload.contato = null;
+      payload.turma = null;
+      payload.turmaId = null;
     }
 
     await item.update(payload);

@@ -1,6 +1,7 @@
 import { env } from './config/env.js';
 import { sequelize } from './config/database.js';
-import './models/Manifestacao.js';
+import { Manifestacao, Turma } from './models/index.js';
+import { seedTurmas } from './seeds/turmas.seed.js';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -11,6 +12,7 @@ export async function initDatabase() {
   }
   await sequelize.authenticate();
   await sequelize.sync({ alter: env.nodeEnv !== 'production' });
+  await seedTurmas(Turma);
 }
 
-export { sequelize };
+export { sequelize, Manifestacao, Turma };

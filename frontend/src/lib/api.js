@@ -36,4 +36,11 @@ export const api = {
     }).then(handle),
   deleteManifestacao: (id) =>
     fetch(`${BASE}/manifestacoes/${id}`, { method: 'DELETE' }).then(handle),
+  listTurmas: () => fetch(`${BASE}/turmas`).then(handle),
+  createTurma: (data) =>
+    fetch(`${BASE}/turmas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }).then(handle),
 };

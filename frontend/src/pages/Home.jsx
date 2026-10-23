@@ -99,7 +99,7 @@ export default function Home() {
             <div className="contact"><span>E-mail:</span> escolanarceupaiva@sedu.es.gov.br</div>
           </div>
           <div className="address">
-            RUA DANIEL COMBONI, 51 — ESCOLA. CENTRO. 29670-000 — Biracu, Espírito Santo
+            RUA DANIEL COMBONI, 51 — ESCOLA. CENTRO. 29670-000 — Ibiracu, Espírito Santo
           </div>
         </div>
       </section>

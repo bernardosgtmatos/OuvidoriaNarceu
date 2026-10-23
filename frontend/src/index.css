@@ -132,9 +132,35 @@ h1, h2, h3, h4 { color: var(--blue-900); margin: 0 0 12px; }
 .contact span { font-weight: 700; color: var(--blue-900); margin-right: 8px; }
 .address { text-align: center; margin-top: 16px; color: var(--muted); font-size: 14px; }
 
+.wizard { display: grid; gap: 16px; }
+.wizard__progress {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.wizard__step {
+  display: grid; gap: 4px; padding: 10px 8px; border-radius: 10px;
+  border: 1px solid var(--border); background: #fff; cursor: pointer; text-align: center;
+}
+.wizard__step:disabled { opacity: 0.45; cursor: not-allowed; }
+.wizard__step.active { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
+.wizard__step.done { background: var(--blue-10); }
+.wizard__step-num {
+  width: 24px; height: 24px; border-radius: 50%; margin: 0 auto;
+  background: var(--blue-10); color: var(--blue-900); font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.wizard__step.active .wizard__step-num { background: #fff; color: var(--blue-600); }
+.wizard__step-label { font-size: 12px; font-weight: 600; }
+.wizard__viewport { overflow: hidden; border-radius: var(--radius); }
+.wizard__track {
+  display: flex; width: 400%; transition: transform 0.35s ease;
+}
+.wizard__slide { width: 25%; padding: 0 4px; box-sizing: border-box; }
+.wizard__actions { display: flex; justify-content: space-between; gap: 8px; }
+
 @media (max-width: 720px) {
   .container { padding: 0 16px; }
   .section { padding: 32px 0; }
   .hero-banner__inner { grid-template-columns: 1fr; }
   .hero-banner__text h1 { font-size: 30px; }
+  .wizard__progress { grid-template-columns: repeat(2, 1fr); }
 }
